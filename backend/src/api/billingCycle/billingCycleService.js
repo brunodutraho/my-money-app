@@ -5,7 +5,7 @@ BillingCycle.methods(['get', 'post', 'put', 'delete'])
 BillingCycle.updateOptions({ new: true, runValidatitors: true })
 BillingCycle.after('post', errorHandler).after('put', errorHandler)
 
-BillingCycle.route('get', (req, res, next) => {
+/*BillingCycle.route('get', (req, res, next) => {
 
     BillingCycle.find({}, (err, docs) => {
 
@@ -21,6 +21,19 @@ BillingCycle.route('get', (req, res, next) => {
 
     })
 
+})*/
+
+BillingCycle.route('get', (req, res, next) => {
+    const skip = Number.parseInt(req.query.skip, 10) || 0
+    const limit = Number.parseInt(req.query.limit, 10) || 10
+
+    BillingCycle.find({}).skip(skip).limit(limit).exec((err, docs) => {
+            if (!err) {
+                res.json(docs)
+            } else {
+                res.status(500).json({errors: [err]})
+            }
+        })
 })
 
 BillingCycle.route('count', (req, res, next) => {
