@@ -1,0 +1,11 @@
+.main-footer {
+    position: fixed;
+    bottom: 0px;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+}
+
+.main-header .sidebar-toggle:hover {
+    color: #3379b7bc;
+}
