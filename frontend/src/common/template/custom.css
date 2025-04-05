@@ -9,3 +9,7 @@
 .main-header .sidebar-toggle:hover {
     color: #3379b7bc;
 }
+
+.sidebar-menu li a {
+    cursor: pointer;
+}
