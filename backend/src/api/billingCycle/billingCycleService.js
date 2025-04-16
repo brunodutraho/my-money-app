@@ -5,62 +5,60 @@ BillingCycle.methods(['get', 'post', 'put', 'delete'])
 BillingCycle.updateOptions({ new: true, runValidatitors: true })
 BillingCycle.after('post', errorHandler).after('put', errorHandler)
 
-/*BillingCycle.route('get', (req, res, next) => {
-
-    BillingCycle.find({}, (err, docs) => {
-
-        if(!err) {
-
-            res.json(docs)
-
-        } else {
-
-            res.status(500).json({errors: [error]})
-
-        }
-
-    })
-
-})*/
-
 BillingCycle.route('get', (req, res, next) => {
-    const skip = Number.parseInt(req.query.skip, 10) || 0
-    const limit = Number.parseInt(req.query.limit, 10) || 10
+  const skip = Number.parseInt(req.query.skip, 50) || 0
+  const limit = Number.parseInt(req.query.limit, 50) || 50
 
-    BillingCycle.find({}).skip(skip).limit(limit).exec((err, docs) => {
-            if (!err) {
-                res.json(docs)
-            } else {
-                res.status(500).json({errors: [err]})
-            }
-        })
+  BillingCycle.find({})
+    .skip(skip)
+    .limit(limit)
+    .exec((err, docs) => {
+      if (!err) {
+        res.json(docs)
+      } else {
+        res.status(500).json({ errors: [err] })
+      }
+    })
 })
 
 BillingCycle.route('count', (req, res, next) => {
-    BillingCycle.count((error, value) => {
-        if(error) {
-            res.status(500).json({errors: [error]})
-        } else {
-            res.json({value})
-        }
-    })
+  BillingCycle.count((error, value) => {
+    if (error) {
+      res.status(500).json({ errors: [error] })
+    } else {
+      res.json({ value })
+    }
+  })
 })
 
 BillingCycle.route('summary', (req, res, next) => {
-    BillingCycle.aggregate([{ 
-        $project: {credit: {$sum: "$credits.value"}, debt: {$sum: "$debts.value"}} 
-    }, { 
-        $group: {_id: null, credit: {$sum: "$credit"}, debt: {$sum: "$debt"}}
-    }, { 
-        $project: {_id: 0, credit: 1, debt: 1}
-    }], (error, result) => {
-        if(error) {
-            res.status(500).json({errors: [error]})
-        } else {
-            res.json(result[0] || {credit: 0, debt: 0})
-        }
-    })
+  BillingCycle.aggregate(
+    [
+      {
+        $project: {
+          credit: { $sum: '$credits.value' },
+          debt: { $sum: '$debts.value' },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          credit: { $sum: '$credit' },
+          debt: { $sum: '$debt' },
+        },
+      },
+      {
+        $project: { _id: 0, credit: 1, debt: 1 },
+      },
+    ],
+    (error, result) => {
+      if (error) {
+        res.status(500).json({ errors: [error] })
+      } else {
+        res.json(result[0] || { credit: 0, debt: 0 })
+      }
+    }
+  )
 })
 
 module.exports = BillingCycle
-
