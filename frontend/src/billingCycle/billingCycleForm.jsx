@@ -30,6 +30,12 @@ class BillingCycleForm extends Component {
       this.props
     const readOnly = tab?.selected === 'tabDelete'
 
+    // Função para garantir que cada item tem um id único
+    const ensureIds = arr =>
+      (arr || []).map(item =>
+        item.id ? item : { ...item, id: Date.now() + Math.random() }
+      )
+
     return (
       <Formik
         enableReinitialize
@@ -37,15 +43,15 @@ class BillingCycleForm extends Component {
           name: initialValues?.name || '',
           month: initialValues?.month || '',
           year: initialValues?.year || '',
-          credits: initialValues?.credits || [],
-          debts: initialValues?.debts || [],
+          credits: ensureIds(initialValues?.credits),
+          debts: ensureIds(initialValues?.debts),
         }}
         onSubmit={(values, { resetForm }) => {
           onSubmit(values)
           resetForm()
         }}
       >
-        {({ isSubmitting, values }) => (
+        {({ isSubmitting, values, setFieldValue }) => (
           <Form role='form' aria-label='form'>
             <div className='box-body'>
               <div className='row form-row'>
@@ -92,7 +98,10 @@ class BillingCycleForm extends Component {
                           <strong>Créditos</strong>
                         </legend>
                         {values.credits.map((credit, index) => (
-                          <div className='row form-row' key={index}>
+                          <div
+                            className='row form-row'
+                            key={credit.id || credit._id || index}
+                          >
                             <div className='col-xs-12 col-sm-4 box-input'>
                               <label>Nome</label>
                               <Field
@@ -129,7 +138,9 @@ class BillingCycleForm extends Component {
                           <button
                             type='button'
                             className='btn btn-primary'
-                            onClick={() => push({ name: '', value: 0 })}
+                            onClick={() =>
+                              push({ id: Date.now() + Math.random(), name: '', value: 0 })
+                            }
                           >
                             Adicionar Crédito
                           </button>
@@ -147,7 +158,10 @@ class BillingCycleForm extends Component {
                           <strong>Débitos </strong>
                         </legend>
                         {values.debts.map((debt, index) => (
-                          <div className='row form-row' key={index}>
+                          <div
+                            className='row form-row'
+                            key={debt.id || debt._id || index}
+                          >
                             <div className='col-xs-12 col-sm-3 box-input'>
                               <label>Nome</label>
                               <Field
@@ -199,7 +213,12 @@ class BillingCycleForm extends Component {
                             type='button'
                             className='btn btn-primary'
                             onClick={() =>
-                              push({ name: '', value: 0, status: '' })
+                              push({
+                                id: Date.now() + Math.random(),
+                                name: '',
+                                value: 0,
+                                status: '',
+                              })
                             }
                           >
                             Adicionar Débito
