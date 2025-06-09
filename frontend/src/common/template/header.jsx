@@ -1,16 +1,32 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
+import Navbar from './navbar'
 
-export default props => (
-    <header className='main-header bg-'>
-        <a href="/#/" className='logo'>
-            <span className='logo-mini'><b>My</b>M</span>
-            <span className='logo-lg'>
-                <i className='fa fa-money'></i>
-                <b> My</b> Money
-            </span>
-        </a>
-        <nav className='navbar navbar-static-top'>
-            <a href='/#/' className='sidebar-toggle' data-toggle='offcanvas'></a> 
-        </nav>
+export default function MainHeader() {
+  const toggleSidebar = () => {
+    document.body.classList.toggle('sidebar-collapse')
+  }
+
+  return (
+    <header className='main-header'>
+      <Link to='/#/' className='logo'>
+        <span className='logo-mini'>
+          <i className='fa fa-money'></i>
+        </span>
+        <span className='logo-lg'>
+          <i className='fa fa-money'></i>
+          <span>
+            <b> My</b> Money
+          </span>
+        </span>
+      </Link>
+
+      <nav className='navbar navbar-static-top'>
+        <button className='sidebar-toggle' onClick={toggleSidebar}>
+          <i className='fa fa-bars' />
+        </button>
+        <Navbar />
+      </nav>
     </header>
-)
+  )
+}

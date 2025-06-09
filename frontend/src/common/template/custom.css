@@ -1,15 +1,122 @@
-.main-footer {
-    position: fixed;
-    bottom: 0px;
-    width: 100vw;
-    display: flex;
+/* === Estilo para o menu colapsado === */
+body.sidebar-collapse .sidebar-menu > li > a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 0;
+}
+
+body.sidebar-collapse .sidebar-menu i {
+  font-size: 20px;
+  margin: 0;
+}
+
+body.sidebar-collapse .sidebar-menu li a span,
+body.sidebar-collapse .sidebar-menu li a .menu-label {
+  display: none;
+}
+
+/* === Estilo do botão do menu lateral === */
+.main-header .sidebar-toggle {
+  border: none;
+}
+
+/* === Centraliza e alterna logo quando colapsado === */
+body.sidebar-collapse .logo-lg {
+  display: none !important;
+}
+
+body.sidebar-collapse .logo-mini {
+  height: 100%;
+  width: 100%;
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  margin-left: 0px !important;
+}
+
+.logo-lg {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+}
+
+/* === Botões base === */
+.base-btn {
+  margin-right: 5px;
+}
+
+/* === Layout do corpo principal === */
+.box-body {
+  display: flex;
+  flex-direction: column;
+}
+
+/* === Layout principal: lado a lado em telas grandes === */
+.box-flex {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.box-flex > div {
+  margin: 5px;
+  flex: 1;
+  min-width: 300px;
+}
+
+.box-input {
+  margin-bottom: 10px;
+}
+.btn-delete {
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* === RESPONSIVIDADE === */
+
+/* MOBILE FIRST: Sidebar vira topo e menu vira horizontal */
+/* MOBILE FIRST: Sidebar vira topo e menu vira horizontal */
+
+/* TABLET: Sidebar menor, menu mais compacto */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .main-sidebar {
+    width: 60px !important;
+  }
+  .sidebar-menu > li > a {
+    font-size: 18px !important;
+    padding: 10px 5px !important;
     justify-content: center;
+  }
+  .sidebar-menu > li > a .menu-label {
+    display: none !important;
+  }
+  .content-wrapper {
+    margin-left: 60px !important;
+    padding: 15px !important;
+  }
 }
 
-.main-header .sidebar-toggle:hover {
-    color: #3379b7bc;
-}
-
-.sidebar-menu li a {
-    cursor: pointer;
+/* DESKTOP: Sidebar padrão */
+@media (min-width: 1025px) {
+  .main-sidebar {
+    width: 230px !important;
+  }
+  .sidebar-menu > li > a {
+    font-size: 16px !important;
+    padding: 12px 15px !important;
+    justify-content: flex-start;
+  }
+  .sidebar-menu > li > a .menu-label {
+    display: inline !important;
+    margin-left: 8px;
+  }
+  .content-wrapper {
+    margin-left: 230px !important;
+    padding: 20px !important;
+  }
 }

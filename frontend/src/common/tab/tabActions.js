@@ -4,7 +4,6 @@ export function selectTab(tabId) {
     payload: tabId,
   }
 }
-showTabs('tabList', 'tabCreate')
 
 export function showTabs(...tabIds) {
   const tabsToShow = {}

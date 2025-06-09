@@ -1,39 +1,72 @@
+// src/api/billingCycle/billingCycleService.js
+const express = require('express')
 const BillingCycle = require('./billingCycle')
-const errorHandler = require('../common/errorHandler')
+const router = express.Router()
 
-BillingCycle.methods(['get', 'post', 'put', 'delete'])
-BillingCycle.updateOptions({ new: true, runValidatitors: true })
-BillingCycle.after('post', errorHandler).after('put', errorHandler)
+// Listar todos (com paginação)
+router.get('/', async (req, res) => {
+  const skip = parseInt(req.query.skip) || 0
+  const limit = parseInt(req.query.limit) || 50
+  const sort = req.query.sort || 'name'
+  const filter = req.query.filter ? JSON.parse(req.query.filter) : {}
 
-BillingCycle.route('get', (req, res, next) => {
-  const skip = Number.parseInt(req.query.skip, 50) || 0
-  const limit = Number.parseInt(req.query.limit, 50) || 50
-
-  BillingCycle.find({})
-    .skip(skip)
-    .limit(limit)
-    .exec((err, docs) => {
-      if (!err) {
-        res.json(docs)
-      } else {
-        res.status(500).json({ errors: [err] })
-      }
-    })
+  try {
+    const docs = await BillingCycle.find(filter).skip(skip).limit(limit).sort(sort)
+    res.json(docs)
+  } catch (err) {
+    res.status(500).json({ errors: [err.message] })
+  }
 })
 
-BillingCycle.route('count', (req, res, next) => {
-  BillingCycle.count((error, value) => {
-    if (error) {
-      res.status(500).json({ errors: [error] })
-    } else {
-      res.json({ value })
-    }
-  })
+// Criar
+router.post('/', async (req, res) => {
+  try {
+    const billingCycle = new BillingCycle(req.body)
+    const saved = await billingCycle.save()
+    res.status(201).json(saved)
+  } catch (err) {
+    res.status(400).json({ errors: [err.message] })
+  }
 })
 
-BillingCycle.route('summary', (req, res, next) => {
-  BillingCycle.aggregate(
-    [
+// Atualizar
+router.put('/:id', async (req, res) => {
+  try {
+    const updated = await BillingCycle.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    )
+    res.json(updated)
+  } catch (err) {
+    res.status(400).json({ errors: [err.message] })
+  }
+})
+
+// Deletar
+router.delete('/:id', async (req, res) => {
+  try {
+    await BillingCycle.findByIdAndDelete(req.params.id)
+    res.status(204).send()
+  } catch (err) {
+    res.status(500).json({ errors: [err.message] })
+  }
+})
+
+// Contar registros
+router.get('/count', async (req, res) => {
+  try {
+    const count = await BillingCycle.countDocuments()
+    res.json({ value: count })
+  } catch (err) {
+    res.status(500).json({ errors: [err.message] })
+  }
+})
+
+// Resumo (sumário de créditos e débitos)
+router.get('/summary', async (req, res) => {
+  try {
+    const result = await BillingCycle.aggregate([
       {
         $project: {
           credit: { $sum: '$credits.value' },
@@ -50,15 +83,11 @@ BillingCycle.route('summary', (req, res, next) => {
       {
         $project: { _id: 0, credit: 1, debt: 1 },
       },
-    ],
-    (error, result) => {
-      if (error) {
-        res.status(500).json({ errors: [error] })
-      } else {
-        res.json(result[0] || { credit: 0, debt: 0 })
-      }
-    }
-  )
+    ])
+    res.json(result[0] || { credit: 0, debt: 0 })
+  } catch (err) {
+    res.status(500).json({ errors: [err.message] })
+  }
 })
 
-module.exports = BillingCycle
+module.exports = router

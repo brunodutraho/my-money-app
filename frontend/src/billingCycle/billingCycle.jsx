@@ -10,18 +10,25 @@ import TabsContent from '../common/tab/tabsContent'
 import TabsHeader from '../common/tab/tabsHeader'
 import Content from '../common/template/content'
 import ContentHeader from '../common/template/contentHeader'
-import { create } from './billingCycleAction'
+import {
+  create,
+  update,
+  remove,
+  selectBillingCycle,
+  init,
+} from './billingCycleAction'
 
 import BillingCycleForm from './billingCycleForm'
 import List from './billingCycleList'
 
 class BillingCycle extends Component {
   componentDidMount() {
-    this.props.selectTab('tabList')
-    this.props.showTabs('tabList', 'tabCreate')
+    this.props.init() // já busca a lista e limpa seleção, seta aba list
   }
 
   render() {
+    const { selectedCycle } = this.props
+
     return (
       <div>
         <ContentHeader title='Ciclos de Pagamento' small='Cadastro' />
@@ -37,18 +44,40 @@ class BillingCycle extends Component {
               <TabContent id='tabList'>
                 <List />
               </TabContent>
+
               <TabContent id='tabCreate'>
                 <BillingCycleForm
                   onSubmit={this.props.create}
                   initialValues={{ name: '', month: '', year: '' }}
                   submitLabel='Incluir'
+                  submitClass='primary'
+                  key='create'
                 />
               </TabContent>
+
               <TabContent id='tabUpdate'>
-                <h1>Alterar</h1>
+                <BillingCycleForm
+                  onSubmit={this.props.update}
+                  initialValues={
+                    selectedCycle || { name: '', month: '', year: '' }
+                  }
+                  submitLabel='Alterar'
+                  submitClass='info'
+                  key={selectedCycle?._id || 'empty'}
+                />
               </TabContent>
+
               <TabContent id='tabDelete'>
-                <h1>Excluir</h1>
+                <BillingCycleForm
+                  onSubmit={this.props.remove}
+                  readOnly={true}
+                  initialValues={
+                    selectedCycle || { name: '', month: '', year: '' }
+                  }
+                  submitLabel='Excluir'
+                  submitClass='danger'
+                  key={selectedCycle?._id || 'empty'}
+                />
               </TabContent>
             </TabsContent>
           </Tabs>
@@ -58,6 +87,14 @@ class BillingCycle extends Component {
   }
 }
 
+const mapStateToProps = state => ({
+  selectedCycle: state.billingCycle.selectedCycle,
+})
+
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ selectTab, showTabs, create }, dispatch)
-export default connect(null, mapDispatchToProps)(BillingCycle)
+  bindActionCreators(
+    { selectTab, showTabs, create, update, remove, selectBillingCycle, init },
+    dispatch
+  )
+
+export default connect(mapStateToProps, mapDispatchToProps)(BillingCycle)
