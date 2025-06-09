@@ -1,6 +1,6 @@
 import React from 'react'
-import MenuItem from './MenuItem'
-import MenuTree from './MenuTree'
+import MenuItem from './menuItem'
+import MenuTree from './menuTree'
 
 export default function Menu() {
   return (
