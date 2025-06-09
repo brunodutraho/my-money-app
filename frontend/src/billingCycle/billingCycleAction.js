@@ -1,8 +1,9 @@
 import axios from 'axios'
 import { toastr } from 'react-redux-toastr'
 import { selectTab, showTabs } from '../common/tab/tabActions'
+import consts from '../consts'
 
-const BASE_URL = 'http://localhost:3003/api'
+const BASE_URL = consts.API_URL
 
 // Tipos de ação
 const BILLING_CYCLES_FETCHED = 'BILLING_CYCLES_FETCHED'
